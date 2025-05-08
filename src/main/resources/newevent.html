@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Event Announcement - Celebration Theme</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .card-container {
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .bg-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        .header {
+            margin-bottom: 15px;
+        }
+        .ribbon {
+            background-color: #FFD700;
+            color: #333;
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-5deg);
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #FF4500;
+            margin: 15px 0;
+        }
+        .icon {
+            font-size: 40px;
+            margin: 10px 0;
+        }
+        .content {
+            padding: 10px;
+            line-height: 1.5;
+        }
+        .event-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1E90FF;
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #FF4500;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <div class="card">
+            <!-- SVG Background Pattern -->
+            <svg class="bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <path fill="#FF9B42" d="M40,30 L45,20 L50,30 L60,35 L50,40 L45,50 L40,40 L30,35 Z" opacity="0.7"></path>
+                <path fill="#FFD700" d="M150,50 L155,40 L160,50 L170,55 L160,60 L155,70 L150,60 L140,55 Z" opacity="0.7"></path>
+                <path fill="#FF5252" d="M30,120 L35,110 L40,120 L50,125 L40,130 L35,140 L30,130 L20,125 Z" opacity="0.7"></path>
+                <path fill="#4CAF50" d="M140,160 L145,150 L150,160 L160,165 L150,170 L145,180 L140,170 L130,165 Z" opacity="0.7"></path>
+                <path fill="#2196F3" d="M60,70 L63,65 L66,70 L71,73 L66,76 L63,81 L60,76 L55,73 Z" opacity="0.7"></path>
+                <path fill="#9C27B0" d="M120,100 L123,95 L126,100 L131,103 L126,106 L123,111 L120,106 L115,103 Z" opacity="0.7"></path>
+                <circle cx="100" cy="40" r="5" fill="#E91E63" opacity="0.6"></circle>
+                <circle cx="160" cy="100" r="7" fill="#3F51B5" opacity="0.6"></circle>
+                <circle cx="60" cy="150" r="6" fill="#009688" opacity="0.6"></circle>
+                <circle cx="30" cy="80" r="4" fill="#FFEB3B" opacity="0.6"></circle>
+                <circle cx="120" cy="170" r="5" fill="#FF5722" opacity="0.6"></circle>
+            </svg>
+            
+            <div class="header">
+                <span class="ribbon">ANNOUNCEMENT</span>
+            </div>
+            
+            <div class="icon">🎉</div>
+            
+            <div class="title">NEW EVENT ADDED!</div>
+            
+            <div class="content">
+                <p class="highlight">
+                    We are excited to introduce a brand new event:
+                </p>
+                <div class="event-name">[EVENT_NAME]</div>
+                <!-- here add value from event.getEventName -->
+                
+                <p><strong>Date & Time:</strong><br>
+                [DATE & TIME]</p>
+                <!-- here add value from event.getEventDate and event.getTime -->
+                
+                <p><strong>Location:</strong><br>
+                [LOCATION]</p>
+                <!-- here add value from event.getVenue -->
+                
+                <p>Don't miss out on the fun and opportunities. Mark your calendar and join us!</p>
+            </div>
+            
+            <div class="footer">
+                Organized by: ADCET
+            </div>
+        </div>
+    </div>
+</body>
+</html>
