@@ -29,12 +29,12 @@ public class MailNotification implements Notification {
 	
 	private Session session = NotificationUtils.getMailSession();
 	
-	public static void main(String args[]) {
-		MailNotification mailNotification = new MailNotification();
-		List<String> emailList = new ArrayList<String>();
-		emailList.add("siddhskore@gmailcom");
-		mailNotification.sendNotificationToAll(emailList,null);
-	}
+//	public static void main(String args[]) {
+//		MailNotification mailNotification = new MailNotification();
+//		List<String> emailList = new ArrayList<String>();
+//		emailList.add("siddhskore@gmailcom");
+//		mailNotification.sendNotificationToAll(emailList,null);
+//	}
 	
 	@Override
 	public void sendNotificationToWinner (String to, String eventName) {
@@ -106,52 +106,6 @@ public class MailNotification implements Notification {
 		
 	}
 
-	/*@Override // notification will be sent to all users informing a event is Available
-	public void sendNotificationToAll(List<String> emails, Events events) {
-		try {
-		    MimeMessage mimeMessage = new MimeMessage(session);
-
-		    Properties properties = NotificationUtils.geProperties();
-		    mimeMessage.setFrom(properties.getProperty("from"));
-
-		    // Add all recipients from the list
-		    for (String email : emails) {
-		        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-		    }
-
-		    File htmlFile = new File("C:\\Java Lab\\Div A\\Java Project\\event-management\\src\\main\\resources\\greetings.html");
-		    String htmlContent = new String(java.nio.file.Files.readAllBytes(htmlFile.toPath()), "UTF-8");
-
-		    MimeMultipart multipart = new MimeMultipart("related");
-
-		    // HTML body part
-		    MimeBodyPart htmlPart = new MimeBodyPart();
-		    htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
-		    multipart.addBodyPart(htmlPart);
-
-		    // Optional: Image part (commented out)
-		    // MimeBodyPart imagePart = new MimeBodyPart();
-		    // imagePart.attachFile("path_to_image");
-		    // imagePart.setHeader("Content-ID", "<congrats-bg>");
-		    // imagePart.setDisposition(MimeBodyPart.INLINE);
-		    // multipart.addBodyPart(imagePart);
-
-		    mimeMessage.setContent(multipart);
-		    mimeMessage.setSubject("New Event has been added");
-
-		    log.info("going to send mail");
-
-		    // Send message
-		     Transport.send(mimeMessage);
-
-		    log.info("Mail sent successfully !!!");
-
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-
-	}*/
-
 	@Override
 	public void sendNotificationToAll(List<String> emails, Events events) {
 		try {
@@ -198,4 +152,60 @@ public class MailNotification implements Notification {
 		}
 	}
 
+	public void registerEventMail(String mail, String message){
+		try {
+			MimeMessage mimeMessage = new MimeMessage(session);
+
+			Properties properties = NotificationUtils.geProperties();
+			mimeMessage.setFrom(properties.getProperty("from"));
+
+			// Add recipient
+			mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(mail));
+
+			mimeMessage.setContent(message, "text/html; charset=utf-8");
+
+			mimeMessage.setSubject("Registration Of Event");
+
+			log.info("Sending registration confirmation to: {}", mail);
+
+			// Send message
+			Transport.send(mimeMessage);
+
+			log.info("Registration email sent successfully!");
+
+		} catch (Exception e) {
+			log.error("Failed to send registration email", e);
+			e.printStackTrace();
+		}
+	}
+
+	public void signupMail(String mail) {
+		try {
+			MimeMessage mimeMessage = new MimeMessage(session);
+
+			Properties properties = NotificationUtils.geProperties();
+			mimeMessage.setFrom(properties.getProperty("from"));
+
+			// Add recipient
+			mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(mail));
+
+			String message = "<html><body><h3>Your account has been created successfully!</h3>"
+					+ "<p>Welcome! You can now log in and start using our services.</p></body></html>";
+
+			mimeMessage.setContent(message, "text/html; charset=utf-8");
+
+			mimeMessage.setSubject("Account Created Successfully");
+
+			log.info("Sending account creation confirmation to: {}", mail);
+
+			// Send message
+			Transport.send(mimeMessage);
+
+			log.info("Account creation email sent successfully!");
+
+		} catch (Exception e) {
+			log.error("Failed to send account creation email", e);
+			e.printStackTrace();
+		}
+	}
 }

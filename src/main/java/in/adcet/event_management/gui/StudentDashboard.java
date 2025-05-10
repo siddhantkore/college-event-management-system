@@ -49,6 +49,8 @@ public class StudentDashboard extends JFrame {
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setMaximumSize(new Dimension(160, 40));
             btn.setFocusPainted(false);
+            btn.setOpaque(true);
+            btn.setBorderPainted(false);
             btn.setBackground(new Color(60, 60, 100));
             btn.setForeground(Color.WHITE);
             btn.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -75,7 +77,6 @@ public class StudentDashboard extends JFrame {
                         StudentViewEvent sve = new StudentViewEvent();
                         sve.setUsername(username);
                         sve.setVisible(true);
-
                         dispose();
                         break;
                     case "Registered Events":

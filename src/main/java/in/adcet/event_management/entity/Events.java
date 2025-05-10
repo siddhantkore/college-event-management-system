@@ -56,7 +56,7 @@ public class Events {
 	@NonNull
 	private String category;
 
-	private String status="ONGOING";
+	private String status="UPCOMING";
 
 	private LocalDate registrationDeadline;
 	

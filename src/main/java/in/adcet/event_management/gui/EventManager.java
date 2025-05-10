@@ -22,9 +22,10 @@ public class EventManager {
     private JTextField codeSearchField;
     private JLabel eventStatusLabel;
     private EventService eventService; // Instance of your EventService
-
+    private String username;
     // Try to use Factory
-    public EventManager() {
+    public EventManager(String username) {
+        this.username = username;
         this.eventService = new EventService(); // Initialize your EventService
         // You might need to adjust how you get the EventService instance
     }
@@ -137,6 +138,9 @@ public class EventManager {
         });
 
         JButton searchButton = createHoverButton("Search", ACCENT_COLOR, HOVER_COLOR);
+        searchButton.setOpaque(true);
+        searchButton.setBorderPainted(false);
+        searchButton.setContentAreaFilled(true);
         searchButton.addActionListener(e -> searchEvent());
 
         searchBarPanel.add(codeSearchField);
@@ -155,15 +159,24 @@ public class EventManager {
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton backButton = createHoverButton("Back", new Color(100, 100, 100), new Color(120, 120, 120));
+        backButton.setBorderPainted(false);
+        backButton.setOpaque(true);
+        backButton.setContentAreaFilled(true);
         backButton.addActionListener(e -> {
             frame.dispose();
-            new AdminDashboard("Admin").setVisible(true);
+            new AdminDashboard(username).setVisible(true);
         });
 
         JButton updateButton = createHoverButton("Update", ACCENT_COLOR, HOVER_COLOR);
+        updateButton.setOpaque(true);
+        updateButton.setContentAreaFilled(true);
+        updateButton.setBorderPainted(false);
         updateButton.addActionListener(e -> updateEvent());
 
         JButton deleteButton = createHoverButton("Delete", new Color(200, 50, 50), new Color(220, 70, 70));
+        deleteButton.setOpaque(true);
+        deleteButton.setContentAreaFilled(true);
+        deleteButton.setBorderPainted(false);
         deleteButton.addActionListener(e -> deleteEvent());
 
         buttonPanel.add(backButton);
@@ -185,6 +198,9 @@ public class EventManager {
         button.setForeground(Color.WHITE);
         button.setBorder(BorderFactory.createEmptyBorder(12, 25, 12, 25));
         button.setFocusPainted(false);
+        button.setOpaque(true); // add new
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         button.addMouseListener(new MouseAdapter() {

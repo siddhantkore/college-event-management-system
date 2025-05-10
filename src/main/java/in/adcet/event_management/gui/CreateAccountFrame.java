@@ -22,7 +22,7 @@ public class CreateAccountFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Banner
-        ImageIcon collegeBanner = new ImageIcon("./images/ADCET1.jpg");
+        ImageIcon collegeBanner = new ImageIcon(getClass().getClassLoader().getResource("images/ADCET1.jpg"));
         Image img = collegeBanner.getImage().getScaledInstance(900, 200, Image.SCALE_SMOOTH);
         JLabel bannerLabel = new JLabel(new ImageIcon(img));
         add(bannerLabel, BorderLayout.NORTH);
@@ -130,8 +130,22 @@ public class CreateAccountFrame extends JFrame {
         buttonPanel.setBackground(new Color(240, 248, 255));
 
         JButton registerBtn = createButton("Register");
+        registerBtn.setFocusPainted(false);
+        registerBtn.setOpaque(true);
+        registerBtn.setContentAreaFilled(true);
+        registerBtn.setBorderPainted(false);
+
         JButton clearBtn = createButton("Clear");
+        clearBtn.setFocusPainted(false);
+        clearBtn.setOpaque(true);
+        clearBtn.setContentAreaFilled(true);
+        clearBtn.setBorderPainted(false);
+
         JButton backBtn = createButton("Back");
+        clearBtn.setFocusPainted(false);
+        clearBtn.setOpaque(true);
+        clearBtn.setContentAreaFilled(true);
+        clearBtn.setBorderPainted(false);
 
         buttonPanel.add(registerBtn);
         buttonPanel.add(clearBtn);
@@ -205,6 +219,9 @@ public class CreateAccountFrame extends JFrame {
         btn.setFocusPainted(false);
         btn.setBackground(new Color(26, 81, 199));
         btn.setForeground(Color.WHITE);
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {

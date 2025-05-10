@@ -101,12 +101,19 @@ public class RegisteredEventsPage extends JFrame {
 
         // Refresh Button
         refreshButton = new JButton("Refresh");
+        refreshButton.setOpaque(true);
+        refreshButton.setContentAreaFilled(true);
+        refreshButton.setBorderPainted(false);
         refreshButton.setBounds(510, 5, 120, 30);
         styleButton(refreshButton, new Color(65, 105, 225));
         searchPanel.add(refreshButton);
 
         // Back Button
         backButton = new JButton("Back");
+        backButton.setFocusPainted(false);
+        backButton.setOpaque(true);
+        backButton.setContentAreaFilled(true);
+        backButton.setBorderPainted(false);
         backButton.setBounds(750, 20, 100, 30);
         styleButton(backButton, new Color(70, 70, 70));
         add(backButton);
@@ -182,6 +189,10 @@ public class RegisteredEventsPage extends JFrame {
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
         button.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(bgColor.darker(), 1),
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
@@ -331,8 +342,8 @@ public class RegisteredEventsPage extends JFrame {
             if (isPushed) {
                 int row = table.convertRowIndexToModel(table.getEditingRow());
                 String eventName = (String) model.getValueAt(row, 0);
-                String date = (String) model.getValueAt(row, 1);
-                String status = (String) model.getValueAt(row, 2);
+                String date = model.getValueAt(row, 1).toString();
+                String status = String.valueOf(model.getValueAt(row, 2));
                 String time="";
                 String venue="";
                 showEventDetails(eventName, date, status,time,venue);
@@ -362,7 +373,8 @@ public class RegisteredEventsPage extends JFrame {
         JPanel headerPanel = new JPanel(new BorderLayout(10, 10));
         headerPanel.setBackground(Color.WHITE);
         
-        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("images/event_icon.png"));
+//        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("images/event_icon.png"));
+        ImageIcon icon = new ImageIcon();
         if (icon.getImageLoadStatus() != MediaTracker.COMPLETE) {
             icon = new ImageIcon(createPlaceholderImage(40, 40, new Color(240, 240, 240)));
         }
@@ -501,6 +513,8 @@ public class RegisteredEventsPage extends JFrame {
 
         // Add close button at bottom
         JButton closeButton = new JButton("Close");
+        closeButton.setOpaque(true);
+        closeButton.setBorderPainted(false);
         styleButton(closeButton, new Color(70, 70, 70));
         closeButton.addActionListener(e -> detailsDialog.dispose());
         

@@ -15,6 +15,7 @@ public class WelcomeFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Top banner image
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("images/AppLogo.png")));
 //        ImageIcon img = new ImageIcon("./images/ADCET1.jpg");
         ImageIcon img = new ImageIcon(getClass().getClassLoader().getResource("images/ADCET1.jpg"));
         Image scaledImg = img.getImage().getScaledInstance(900, 200, Image.SCALE_SMOOTH);
@@ -34,7 +35,14 @@ public class WelcomeFrame extends JFrame {
 
         // Buttons
         JButton loginButton = new JButton("Login");
+        loginButton.setOpaque(true);
+        loginButton.setContentAreaFilled(true);
+        loginButton.setBorderPainted(false);
+
         JButton createButton = new JButton("Create Account");
+        createButton.setOpaque(true);
+        createButton.setContentAreaFilled(true);
+        createButton.setBorderPainted(false);
 
         styleButton(loginButton);
         styleButton(createButton);

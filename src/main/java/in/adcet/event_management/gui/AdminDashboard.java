@@ -38,6 +38,9 @@ public class AdminDashboard extends JFrame {
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setMaximumSize(new Dimension(160, 40));
             btn.setFocusPainted(false);
+            btn.setOpaque(true);
+            btn.setContentAreaFilled(true);
+            btn.setBorderPainted(false);
             btn.setBackground(new Color(60, 60, 100));
             btn.setForeground(Color.WHITE);
             btn.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -67,7 +70,7 @@ public class AdminDashboard extends JFrame {
                         dispose();
                         break;
                     case "Manage Events":
-                        new EventManager().setVisible(true);
+                        new EventManager(username).setVisible(true);
                         dispose();
                         break;
                     case "Logout":

@@ -18,6 +18,8 @@ import in.adcet.event_management.DTO.RegistrationDTO;
 public class RegistrationDAO {
 
 	private SessionFactory sessionFactory = SessionFactoryUtils.getSessionFactory();
+
+	private EventDAO eventDAO = new EventDAO();
 	
 	public List<RegistrationDTO> getAllRegistrations () throws Exception {
 		
@@ -100,7 +102,17 @@ public class RegistrationDAO {
 		try (Session session = sessionFactory.openSession()) {
 			
 			transaction = session.beginTransaction();
-			
+			Events events1 = eventDAO.getEventByCode(events.getCode());
+			if(events1.getStatus().equalsIgnoreCase("completed"))
+				throw new Exception();
+			if(events1.getRegistrationCount()>events1.getMaxParticipant())
+				throw new Exception();
+
+			int count = events1.getRegistrationCount()+1;
+			events1.setRegistrationCount(count);
+
+			eventDAO.updateEvent(events1);
+
 			register.setEvents(events);
 			register.setUser(user);
 			session.persist(register);

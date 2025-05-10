@@ -216,6 +216,7 @@ class EventFrame extends JFrame {
         backButton.setFocusPainted(false);
         backButton.setFont(new Font("Arial", Font.BOLD, 14));
         backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
         backButton.setBackground(secondaryColor);
         backButton.setForeground(primaryColor);
         backButton.setBorder(BorderFactory.createCompoundBorder(
@@ -423,6 +424,8 @@ class EventCard extends JPanel {
         moreBtn.setBackground(accentColor);
         moreBtn.setForeground(Color.WHITE);
         moreBtn.setFocusPainted(false);
+        moreBtn.setOpaque(true);
+        moreBtn.setBorderPainted(false);
         moreBtn.setFont(new Font("Arial", Font.BOLD, 14));
         moreBtn.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(accentColor.darker(), 1),
@@ -497,7 +500,7 @@ class EventDetailsDialog extends JDialog {
 
         // Organizer tab
         JPanel organizerPanel = createOrganizerPanel(event, secondaryColor, textColor);
-        tabbedPane.addTab("Organizer", organizerPanel);
+//        tabbedPane.addTab("Organizer", organizerPanel); // Organizer paused // message also commented
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
@@ -514,6 +517,8 @@ class EventDetailsDialog extends JDialog {
         });
         
         JButton closeBtn = new JButton("Close");
+        closeBtn.setBorderPainted(false);
+        closeBtn.setOpaque(true);
         styleButton(closeBtn, new Color(100, 100, 100), Color.WHITE);
         closeBtn.addActionListener(e -> dispose());
         
@@ -537,8 +542,10 @@ class EventDetailsDialog extends JDialog {
         details.setForeground(textColor);
         details.setLineWrap(true);
         details.setWrapStyleWord(true);
-        
-        String detailsText = "Event Code: " + event.getCode() + "\n\n" +
+
+        String detailsText ="Event Name: " + event.getName() + "\n\n" +
+                            "Event Category: " + event.getCategory() + "\n\n" +
+                            "Event Code: " + event.getCode() + "\n\n" +
                            "Status: " + event.getStatus() + "\n\n" +
                            "Description:\n" + event.getDescription() + "\n\n" +
                            "Location: " + event.getVenue() + "\n\n" +
@@ -566,10 +573,10 @@ class EventDetailsDialog extends JDialog {
         schedule.setLineWrap(true);
         schedule.setWrapStyleWord(true);
         
-        String scheduleText = "Start Date: " + formatDate(String.valueOf(event.getEventDate())) + "\n\n" +
-                            "End Date: " + formatDate(String.valueOf(event.getEndDate())) + "\n\n" +
+        String scheduleText = "Date: " + formatDate(String.valueOf(event.getEventDate())) + "\n\n" +
+//                            "End Date: " + formatDate(String.valueOf(event.getEndDate())) + "\n\n" +
                             "Time: " + event.getTime() + "\n\n" +
-                            "Duration: " + calculateDuration(String.valueOf(event.getEventDate()), String.valueOf(event.getEndDate())) + "\n\n" +
+//                            "Duration: " + calculateDuration(String.valueOf(event.getEventDate()), String.valueOf(event.getEndDate())) + "\n\n" +
                             "Location: " + event.getVenue();
         
         schedule.setText(scheduleText);
@@ -627,6 +634,7 @@ class EventDetailsDialog extends JDialog {
         button.setForeground(textColor);
         button.setFocusPainted(false);
         button.setOpaque(true);
+        button.setBorderPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(bgColor.darker(), 1),

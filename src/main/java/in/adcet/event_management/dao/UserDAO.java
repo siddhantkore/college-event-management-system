@@ -2,6 +2,7 @@ package in.adcet.event_management.dao;
 
 import java.util.List;
 
+import in.adcet.event_management.notifications.MailNotification;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -54,6 +55,7 @@ public class UserDAO {
 			transaction = session.beginTransaction();
 			
 			session.persist(user);
+			new MailNotification().signupMail(user.getEmail());
 			transaction.commit();
 			return user;
 		} catch (Exception e) {

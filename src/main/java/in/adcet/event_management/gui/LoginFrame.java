@@ -118,8 +118,22 @@ public class LoginFrame extends JFrame {
         buttonPanel.setBackground(new Color(240, 248, 255));
 
         JButton loginBtn = createButton("Login");
+        loginBtn.setFocusPainted(false);
+        loginBtn.setOpaque(true);
+        loginBtn.setContentAreaFilled(true);
+        loginBtn.setBorderPainted(false);
+
         JButton clearBtn = createButton("Clear");
+        clearBtn.setFocusPainted(false);
+        clearBtn.setOpaque(true);
+        clearBtn.setContentAreaFilled(true);
+        clearBtn.setBorderPainted(false);
+
         JButton backBtn = createButton("Back");
+        backBtn.setFocusPainted(false);
+        backBtn.setOpaque(true);
+        backBtn.setContentAreaFilled(true);
+        backBtn.setBorderPainted(false);
 
         buttonPanel.add(loginBtn);
         buttonPanel.add(clearBtn);

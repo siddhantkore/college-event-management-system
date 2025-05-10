@@ -175,12 +175,18 @@ public class RegisterEvent {
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton viewDetailsButton = createHoverButton("View Details", ACCENT_COLOR, HOVER_COLOR);
+        viewDetailsButton.setOpaque(true);
+        viewDetailsButton.setBorderPainted(false);
         viewDetailsButton.addActionListener(e -> showEventDetails());
 
         JButton registerButton = createHoverButton("Register", new Color(50, 150, 50), new Color(60, 180, 60));
+        registerButton.setBorderPainted(false);
+        registerButton.setOpaque(true);
         registerButton.addActionListener(e -> registerForEvent());
 
         JButton backButton = createHoverButton("Back", new Color(100, 100, 100), new Color(120, 120, 120));
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
         backButton.addActionListener(e -> {
             frame.dispose();
             new StudentDashboard(username).setVisible(true);
@@ -240,7 +246,9 @@ public class RegisterEvent {
             if (confirm == JOptionPane.YES_OPTION) {
 
                 User user = userService.getUserByUsername(username);
-                registerService.registerAEvent(events,user);
+                String result = registerService.registerAEvent(events,user);
+                if(result==null)
+                    return;
                 eventStatusLabel.setText("Registered successfully!");
                 eventStatusLabel.setForeground(new Color(0, 150, 0));
             }

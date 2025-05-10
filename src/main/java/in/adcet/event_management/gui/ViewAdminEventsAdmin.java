@@ -135,6 +135,9 @@ class AdminEventDashboard extends JFrame {
 
         // Back Button
         JButton backButton = createNavigationButton();
+        backButton.setOpaque(true);
+        backButton.setContentAreaFilled(true);
+        backButton.setBorderPainted(false);
         
         JLabel title = new JLabel("ALL EVENTS");
         title.setFont(new Font("Arial", Font.BOLD, 28));
@@ -297,6 +300,8 @@ class AdminEventDashboard extends JFrame {
         event1.setRegistrationCount(updatedEvent.getRegistered());
 
         Optional<Events> eventUpdated = eventService.updateEvent(event1);
+        if(eventUpdated.get()==null)
+            return;
         if (index != -1) {
             adminEventsList.set(index, updatedEvent);
             refreshAdminEventsList(adminEventsList);
@@ -382,6 +387,8 @@ class AdminEventCardComponent extends JPanel {
         regLabel.setForeground(new Color(100, 100, 100));
 
         JButton detailsBtn = new JButton("View Details");
+        detailsBtn.setBorderPainted(false);
+        detailsBtn.setOpaque(true);
         styleActionButton(detailsBtn, accentColor, Color.WHITE);
         detailsBtn.addActionListener(e -> new AdminEventDetailsWindow(event, parent));
 
@@ -499,14 +506,20 @@ class AdminEventDetailsWindow extends JDialog {
         buttonPanel.setBackground(new Color(241, 245, 249));
         
         JButton updateBtn = new JButton("Update Event");
+        updateBtn.setOpaque(true);
+        updateBtn.setBorderPainted(false);
         styleButton(updateBtn, new Color(59, 130, 246), Color.WHITE);
         updateBtn.addActionListener(e -> showUpdateDialog());
         
         JButton deleteBtn = new JButton("Delete Event");
+        deleteBtn.setOpaque(true);
+        deleteBtn.setBorderPainted(false);
         styleButton(deleteBtn, new Color(220, 38, 38), Color.WHITE);
         deleteBtn.addActionListener(e -> parent.deleteAdminEvent(event));
         
         JButton closeBtn = new JButton("Close");
+        closeBtn.setBorderPainted(false);
+        closeBtn.setOpaque(true);
         styleButton(closeBtn, new Color(100, 116, 139), Color.WHITE);
         closeBtn.addActionListener(e -> dispose());
         
@@ -541,6 +554,8 @@ class AdminEventDetailsWindow extends JDialog {
         button.setBackground(bgColor);
         button.setForeground(textColor);
         button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorderPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(bgColor.darker(), 1),
@@ -609,6 +624,8 @@ class AdminEventDetailsWindow extends JDialog {
         buttonPanel.setBackground(new Color(241, 245, 249));
         
         JButton saveBtn = new JButton("Save Changes");
+        saveBtn.setBorderPainted(false);
+        saveBtn.setOpaque(true);
         styleButton(saveBtn, new Color(59, 130, 246), Color.WHITE);
         saveBtn.addActionListener(e -> {
             AdminEvent updatedEvent = new AdminEvent(
@@ -625,6 +642,8 @@ class AdminEventDetailsWindow extends JDialog {
         });
         
         JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.setOpaque(true);
+        cancelBtn.setBorderPainted(false);
         styleButton(cancelBtn, new Color(100, 116, 139), Color.WHITE);
         cancelBtn.addActionListener(e -> updateDialog.dispose());
         

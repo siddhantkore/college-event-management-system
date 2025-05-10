@@ -2,6 +2,8 @@ package in.adcet.event_management.gui;
 
 import in.adcet.event_management.entity.Events;
 import in.adcet.event_management.entity.User;
+import in.adcet.event_management.notifications.MailNotification;
+import in.adcet.event_management.notifications.Notification;
 import in.adcet.event_management.service.RegisterService;
 import in.adcet.event_management.service.UserService;
 
@@ -37,7 +39,7 @@ public class RegisterEventPage extends JFrame {
         leftBannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, primaryColor));
 
         // Banner image with proper scaling
-        ImageIcon originalIcon = new ImageIcon("./images/eventlogo1.png");
+        ImageIcon originalIcon = new ImageIcon(getClass().getClassLoader().getResource("images/eventlogo1.png"));
         Image scaledImage = originalIcon.getImage().getScaledInstance(250, 600, Image.SCALE_SMOOTH);
         JLabel bannerImage = new JLabel(new ImageIcon(scaledImage));
         bannerImage.setHorizontalAlignment(SwingConstants.CENTER);
@@ -72,7 +74,7 @@ public class RegisterEventPage extends JFrame {
 
         // Personal Information
         JPanel personalPanel = createLabeledFieldPanel("Personal Information");
-        addLabeledField(personalPanel, "Full Name:", createTextField(""));
+        addLabeledField(personalPanel, "Username", createTextField(""));
         addLabeledField(personalPanel, "Gender:", createComboBox(new String[]{"Male", "Female", "Other", "Prefer not to say"}));
         addLabeledField(personalPanel, "Email:", createTextField(""));
         addLabeledField(personalPanel, "Phone:", createTextField(""));
@@ -90,6 +92,9 @@ public class RegisterEventPage extends JFrame {
         agreeCheck.setBackground(secondaryColor);
         
         JButton viewTermsBtn = new JButton("View Terms and Conditions");
+        viewTermsBtn.setOpaque(true);
+        viewTermsBtn.setBorderPainted(false);
+        viewTermsBtn.setContentAreaFilled(true);
         styleButton(viewTermsBtn, new Color(100, 100, 100), Color.WHITE, 12);
         viewTermsBtn.addActionListener(e -> showTermsAndConditions());
         
@@ -108,10 +113,13 @@ public class RegisterEventPage extends JFrame {
         buttonPanel.setBackground(secondaryColor);
         
         JButton submitBtn = new JButton("Submit Registration");
+        submitBtn.setOpaque(true);
+        submitBtn.setContentAreaFilled(true);
+        submitBtn.setBorderPainted(false);
         styleButton(submitBtn, accentColor, Color.WHITE, 14);
         submitBtn.addActionListener(e -> {
             if (validateForm(personalPanel)) {
-                submitRegistration(event, getFieldValue(personalPanel, "Full Name:"), 
+                submitRegistration(event, getFieldValue(personalPanel, "Username"),
                                  getComboBoxValue(personalPanel, "Gender:"),
                                  getFieldValue(personalPanel, "Email:"), 
                                  getFieldValue(personalPanel, "Phone:"));
@@ -119,6 +127,9 @@ public class RegisterEventPage extends JFrame {
         });
         
         JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.setOpaque(true);
+        cancelBtn.setBorderPainted(false);
+        cancelBtn.setContentAreaFilled(true);
         styleButton(cancelBtn, new Color(150, 150, 150), Color.WHITE, 14);
         cancelBtn.addActionListener(e -> dispose());
         
@@ -197,6 +208,7 @@ public class RegisterEventPage extends JFrame {
         button.setBackground(bgColor);
         button.setForeground(textColor);
         button.setFocusPainted(false);
+        button.setOpaque(true);
         button.setFont(new Font("Arial", Font.BOLD, fontSize));
         button.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(bgColor.darker(), 1),
@@ -215,11 +227,11 @@ public class RegisterEventPage extends JFrame {
     }
 
     private boolean validateForm(JPanel personalPanel) {
-        String fullName = getFieldValue(personalPanel, "Username");
+        String username = getFieldValue(personalPanel, "Username");
         String email = getFieldValue(personalPanel, "Email:");
         String phone = getFieldValue(personalPanel, "Phone:");
         
-        if (fullName.trim().isEmpty()) {
+        if (username.trim().isEmpty()) {
             showError("Username is required");
             return false;
         }
@@ -277,15 +289,20 @@ public class RegisterEventPage extends JFrame {
             showError("User not found");
             return;
         }
-        registerService.registerAEvent(event,user);
+        String result = registerService.registerAEvent(event,user);
+        if(result==null){
+            showError("Can't Register ");
+            return; 
+        }
+
         // save to the database for email user
         String message = "<html><div style='text-align:center;'><h2>Registration Successful!</h2>" +
                         "<p><b>Event:</b> " + event.getName() + " (" + event.getCode() + ")</p>" +
                         "<p><b>Name:</b> " + username + "</p>" +
-                        "<p><b>Gender:</b> " + gender + "</p>" +
                         "<p><b>Email:</b> " + email + "</p>" +
                         "<p><b>Phone:</b> " + phone + "</p><br>" +
                         "<p>Thank you for registering!</p></div></html>";
+        new MailNotification().registerEventMail(email,message);
         
         JOptionPane.showMessageDialog(this, message, "Registration Complete", JOptionPane.INFORMATION_MESSAGE);
         dispose();
@@ -309,6 +326,9 @@ public class RegisterEventPage extends JFrame {
         termsDialog.add(scrollPane, BorderLayout.CENTER);
         
         JButton closeBtn = new JButton("Close");
+        closeBtn.setBorderPainted(false);
+        closeBtn.setOpaque(true);
+        closeBtn.setContentAreaFilled(true);
         styleButton(closeBtn, accentColor, Color.WHITE, 12);
         closeBtn.addActionListener(e -> termsDialog.dispose());
         

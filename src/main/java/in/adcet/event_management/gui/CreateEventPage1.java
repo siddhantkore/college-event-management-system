@@ -26,7 +26,7 @@ public class CreateEventPage1 extends JFrame {
         this.username = usernamee;
         this.eventService = new EventService();
         setTitle("Create Event - Admin");
-        setSize(1000, 600);
+        setSize(1000, 680);
         setMinimumSize(new Dimension(800, 500));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -74,6 +74,11 @@ public class CreateEventPage1 extends JFrame {
         nameLabel.setFont(labelFont);
         JTextField nameField = new JTextField(20);
 
+        JLabel codeLabel = new JLabel("Event Code:");
+        codeLabel.setFont(labelFont);
+        JTextField codeField = new JTextField(20);
+
+
         JLabel descLabel = new JLabel("Description:");
         descLabel.setFont(labelFont);
         JTextArea descArea = new JTextArea(3, 20);
@@ -116,6 +121,10 @@ public class CreateEventPage1 extends JFrame {
         JLabel bannerLabel = new JLabel("Upload Banner:");
         bannerLabel.setFont(labelFont);
         JButton uploadButton = new JButton("Upload");
+        uploadButton.setFocusPainted(false);
+        uploadButton.setOpaque(true);
+        uploadButton.setContentAreaFilled(true);
+        uploadButton.setBorderPainted(false);
         selectedFile = new JLabel("No file selected");
 
         uploadButton.addActionListener(e -> {
@@ -131,19 +140,11 @@ public class CreateEventPage1 extends JFrame {
             }
         });
 
-//        uploadButton.addActionListener(e -> {
-//            JFileChooser fileChooser = new JFileChooser();
-//            int option = fileChooser.showOpenDialog(null);
-//            if (option == JFileChooser.APPROVE_OPTION) {
-//                File file = fileChooser.getSelectedFile();
-//                selectedFile.setText("Selected: " + file.getName());
-//            } else {
-//                selectedFile.setText("No file selected");
-//            }
-//        });
+//
 
         int row = 0;
         addRow(formPanel, gbc, row++, nameLabel, nameField);
+        addRow(formPanel, gbc, row++, codeLabel, codeField);
         addRow(formPanel, gbc, row++, descLabel, descScroll);
         addRow(formPanel, gbc, row++, dateLabel, dateTimePanel); // Date & Time in same row
         addRow(formPanel, gbc, row++, venueLabel, venueField);
@@ -166,8 +167,16 @@ public class CreateEventPage1 extends JFrame {
         buttonPanel.setBackground(Color.WHITE);
 
         JButton createButton = new JButton("Create Event");
+        createButton.setOpaque(true);
+        createButton.setBorderPainted(false);
+
         JButton resetButton = new JButton("Reset");
+        resetButton.setOpaque(true);
+        resetButton.setBorderPainted(false);
+
         JButton backButton = new JButton("Back");
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
 
         // Updated colors with better contrast
         addHoverEffect(createButton, new Color(0, 120, 60));  // Darker green
@@ -196,6 +205,7 @@ public class CreateEventPage1 extends JFrame {
         createButton.addActionListener(e -> {
             // Retrieve data from the form
             String eventName = nameField.getText().trim();
+            String eventCode = codeField.getText().trim();
             String description = descArea.getText();
             String dateStr = dateField.getText();
             String timeStr = timeField.getText();
@@ -210,8 +220,16 @@ public class CreateEventPage1 extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please enter event name!", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            if (eventCode.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter event code!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             if (dateStr.isEmpty() || timeStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter both date and time!", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please enter both date and time valid!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE).isBefore(LocalDate.now())) {
+                JOptionPane.showMessageDialog(this, "The date cannot be in the past!", "Invalid Date", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             if (venue.isEmpty()) {
@@ -236,7 +254,7 @@ public class CreateEventPage1 extends JFrame {
                 // Create an Event object
                 Events newEvent = new Events();
                 newEvent.setName(eventName);
-                newEvent.setCode("REELTREND2025");
+                newEvent.setCode(eventCode);
                 newEvent.setDescription(description);
                 newEvent.setEventDate(eventDate);
                 newEvent.setTime(eventTime);
@@ -268,6 +286,7 @@ public class CreateEventPage1 extends JFrame {
 
         resetButton.addActionListener(e -> {
             nameField.setText("");
+            codeField.setText("");
             descArea.setText("");
             dateField.setText("");
             timeField.setText("");
@@ -319,6 +338,9 @@ public class CreateEventPage1 extends JFrame {
         button.setBackground(baseColor);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         button.addMouseListener(new MouseAdapter() {
