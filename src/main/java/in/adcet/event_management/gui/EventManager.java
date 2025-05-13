@@ -228,7 +228,7 @@ public class EventManager {
 
         Optional<Events> eventOptional = eventService.getEventByCode(code);
 
-        if (eventOptional.isPresent()) {
+        if (eventOptional.get()!=null) {
             Events event = eventOptional.get();
             eventStatusLabel.setText("Event Found: " + event.getName());
             eventStatusLabel.setForeground(new Color(0, 150, 0));

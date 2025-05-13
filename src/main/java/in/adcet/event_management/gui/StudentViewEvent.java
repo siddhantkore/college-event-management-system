@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
@@ -65,6 +67,12 @@ class EventFrame extends JFrame {
     private RegisterService registerService = new RegisterService();
     private  String username;
 
+    private String currentStatus = "All Status";
+    private String currentCategory = "All Categories";
+    private String currentSearchQuery = "";
+
+    private JComboBox<String> statusFilter;
+    private JComboBox<String> categoryFilter;
 
     public EventFrame(JFrame parentFrame, String username) {
         this.username = username;
@@ -121,19 +129,23 @@ class EventFrame extends JFrame {
             linkLabel.setForeground(accentColor);
             linkLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             linkLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
             linkLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    filterByCategory(link);
-                }
-                public void mouseEntered(MouseEvent e) {
-                    linkLabel.setForeground(accentColor.darker());
-                }
-                public void mouseExited(MouseEvent e) {
-                    linkLabel.setForeground(accentColor);
+                    String filterType = linkLabel.getText();
+                    if (filterType.equals("My Registrations")) {
+                        showMyRegistrations();
+                    } else {
+                        String status = filterType.replace(" Events", "");
+                        currentStatus = status;
+                        statusFilter.setSelectedItem(status);
+                        applyCombinedFilter();
+                    }
                 }
             });
             quickLinksPanel.add(linkLabel);
             quickLinksPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
         }
         
         bannerContent.add(quickLinksPanel);
@@ -145,6 +157,10 @@ class EventFrame extends JFrame {
         topPanel.setBackground(primaryColor);
         topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        // Create filter panel
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        filterPanel.setBackground(primaryColor);
+
         // Back Button
         JButton backButton = createBackButton();
         
@@ -152,6 +168,30 @@ class EventFrame extends JFrame {
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setForeground(Color.WHITE);
         title.setHorizontalAlignment(SwingConstants.CENTER);
+
+        statusFilter = new JComboBox<>(new String[]{
+                "All Status", "Upcoming", "Ongoing", "Completed"});
+        styleComboBox(statusFilter);
+        statusFilter.addActionListener(e -> {
+            currentStatus = (String) statusFilter.getSelectedItem();
+            applyCombinedFilter();
+        });
+        filterPanel.add(new JLabel("Status:"));
+        filterPanel.add(statusFilter);
+
+        // Category Filter
+        categoryFilter = new JComboBox<>(new String[]{
+                "All Categories", "Technical", "Cultural", "Sports", "Workshop"});
+        styleComboBox(categoryFilter);
+        categoryFilter.addActionListener(e -> {
+            currentCategory = (String) categoryFilter.getSelectedItem();
+            applyCombinedFilter();
+        });
+        filterPanel.add(new JLabel("Category:"));
+        filterPanel.add(categoryFilter);
+
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(primaryColor);
 
         // Search Panel
         JPanel searchPanel = createSearchPanel();
@@ -168,10 +208,19 @@ class EventFrame extends JFrame {
         topRightPanel.setBackground(primaryColor);
         topRightPanel.add(searchPanel);
 
+        topPanel.add(filterPanel, BorderLayout.CENTER);
         topPanel.add(topLeftPanel, BorderLayout.WEST);
         topPanel.add(topCenterPanel, BorderLayout.CENTER);
         topPanel.add(topRightPanel, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
+
+        headerPanel.add(topLeftPanel, BorderLayout.WEST);
+        headerPanel.add(topCenterPanel, BorderLayout.CENTER);
+        headerPanel.add(topRightPanel, BorderLayout.EAST);
+
+        // Add components to top panel
+        topPanel.add(filterPanel, BorderLayout.NORTH);
+        topPanel.add(headerPanel, BorderLayout.CENTER);
 
         // Main Content
         cardsContainer = new JPanel();
@@ -189,27 +238,57 @@ class EventFrame extends JFrame {
         loadEvents(allEvents); // showing events got from database
     }
 
-    private void filterByCategory(String category) {
+    private void showMyRegistrations() {
         List<Events> filtered = new ArrayList<>();
-        for (Events event : allEvents) {
-            if (category.equals("Upcoming Events") && event.getStatus().equalsIgnoreCase("Upcoming")) {
-                filtered.add(event); // status upcoming
-            } else if (category.equals("Ongoing Events") && event.getStatus().equalsIgnoreCase("Ongoing")) {
-                filtered.add(event); // status ongoing
-            } else if (category.equals("Past Events") && event.getStatus().equalsIgnoreCase("Completed")) {
-                filtered.add(event); // closed events
-            } else if (category.equals("My Registrations")) {
-                List<RegistrationDTO> events = registerService.getEventsOfAStudent(username);
-                for (RegistrationDTO e:events){
-                    if(event.getName().equalsIgnoreCase(e.getName())){
-                        filtered.add(event);
-                    }
+        List<RegistrationDTO> registrations = registerService.getEventsOfAStudent(username);
+        for (RegistrationDTO reg : registrations) {
+            for (Events event : allEvents) {
+                if (event.getCode().equals(reg.getCode())) {
+                    filtered.add(event);
                 }
-                filtered.add(event); // get all events of a student
             }
         }
-        loadEvents(filtered); // showing filtered events
+        loadEvents(filtered);
     }
+
+
+    private void applyCombinedFilter() {
+        List<Events> filtered = new ArrayList<>();
+        for (Events event : allEvents) {
+            // Check status filter
+            boolean statusMatch = currentStatus.equalsIgnoreCase("All Status") ||
+                    event.getStatus().equalsIgnoreCase(currentStatus);
+
+            // Check category filter
+            boolean categoryMatch = currentCategory.equalsIgnoreCase("All Categories") ||
+                    event.getCategory().equalsIgnoreCase(currentCategory);
+
+            // Check search query
+            boolean searchMatch = currentSearchQuery.isEmpty() ||
+                    event.getName().toLowerCase().contains(currentSearchQuery) ||
+                    event.getCode().toLowerCase().contains(currentSearchQuery) ||
+                    event.getDescription().toLowerCase().contains(currentSearchQuery) ||
+                    event.getVenue().toLowerCase().contains(currentSearchQuery);
+
+            if (statusMatch && categoryMatch && searchMatch) {
+                filtered.add(event);
+            }
+        }
+        loadEvents(filtered);
+    }
+
+
+    private void styleComboBox(JComboBox<String> combo) {
+        combo.setFont(new Font("Arial", Font.PLAIN, 14));
+        combo.setBackground(secondaryColor);
+        combo.setForeground(textColor);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(secondaryColor, 1),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+    }
+//
+
 
     private JButton createBackButton() {
         JButton backButton = new JButton("\u2190 Back");
@@ -300,14 +379,14 @@ class EventFrame extends JFrame {
         List<Events> filtered = new ArrayList<>();
         for (Events event : allEvents) {
             if (event.getName().toLowerCase().contains(query) ||
-                event.getCode().toLowerCase().contains(query) ||
-                event.getDescription().toLowerCase().contains(query) ||
-                event.getVenue().toLowerCase().contains(query) ||
-                event.getOrganizer().toLowerCase().contains(query)) {
+                    event.getCode().toLowerCase().contains(query) ||
+                    event.getDescription().toLowerCase().contains(query) ||
+                    event.getVenue().toLowerCase().contains(query) ||
+                    event.getCategory().toLowerCase().contains(query)) {
                 filtered.add(event);
             }
         }
-        loadEvents(filtered); // show filtered events
+        loadEvents(filtered);
     }
 
     // get all the events from database
@@ -454,7 +533,7 @@ class EventCard extends JPanel {
     private String formatDate(String dateStr) {
         try {
             LocalDate date = LocalDate.parse(dateStr);
-            return date.format(DateTimeFormatter.ofPattern("MMM d, yyyy"));
+            return date.format(DateTimeFormatter.ISO_DATE);
         } catch (Exception e) {
             return dateStr;
         }
@@ -474,8 +553,47 @@ class EventDetailsDialog extends JDialog {
         mainPanel.setBackground(secondaryColor);
 
         // Banner image
-        JLabel banner = new JLabel(new ImageIcon(event.getBannerPath()));
-//        JLabel banner = new JLabel(new ImageIcon());
+//        JLabel banner = new JLabel(new ImageIcon(event.getBannerPath()));
+        JLabel banner;
+        try {
+            File imageFile = new File(event.getBannerPath());
+            if(imageFile.exists() && imageFile.canRead()) {
+                System.out.println("true");
+                // Load the original image
+                ImageIcon originalIcon = new ImageIcon(imageFile.toURI().toURL());
+                // Scale the image properly to fit the banner size
+                Image scaledImage = getScaledImage(originalIcon.getImage(), 650, 200);
+                banner = new JLabel(new ImageIcon(scaledImage));
+            } else {
+                System.out.println("Image not found or can't be read");
+                banner = new JLabel(new ImageIcon());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Image not found");
+            // Fallback to a default image or show an error message
+            banner = new JLabel(new ImageIcon());
+        }
+
+        banner.setPreferredSize(new Dimension(650, 200));
+        banner.setHorizontalAlignment(SwingConstants.CENTER);
+        banner.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(primaryColor, 1),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        mainPanel.add(banner, BorderLayout.NORTH);
+/*        JLabel banner ;
+        try {
+            File imageFile = new File(event.getBannerPath());
+            if(imageFile.exists() && imageFile.canRead())
+                System.out.println("true");
+            banner = new JLabel(new ImageIcon(imageFile.toURI().toURL()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Image not found");
+            // Fallback to a default image or show an error message
+            banner = new JLabel(new ImageIcon());
+        }
         banner.setPreferredSize(new Dimension(650, 200));
         banner.setHorizontalAlignment(SwingConstants.CENTER);
         banner.setBorder(BorderFactory.createCompoundBorder(
@@ -483,7 +601,7 @@ class EventDetailsDialog extends JDialog {
             BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         mainPanel.add(banner, BorderLayout.NORTH);
-
+*/
         // Details panel with tabs
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(secondaryColor);
@@ -529,7 +647,31 @@ class EventDetailsDialog extends JDialog {
         add(mainPanel);
         setVisible(true);
     }
-    
+    private Image getScaledImage(Image srcImg, int width, int height) {
+        // Calculate the scaling factors
+        int srcWidth = srcImg.getWidth(null);
+        int srcHeight = srcImg.getHeight(null);
+
+        // Calculate the scaling factors to maintain aspect ratio
+        double scaleW = (double) width / srcWidth;
+        double scaleH = (double) height / srcHeight;
+        double scale = Math.min(scaleW, scaleH); // Take the smaller scale to fit the container
+
+        // Calculate new dimensions
+        int newWidth = (int) (srcWidth * scale);
+        int newHeight = (int) (srcHeight * scale);
+
+        // Create a new scaled image
+        BufferedImage resizedImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resizedImg.createGraphics();
+
+        // Use better quality interpolation
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(srcImg, 0, 0, newWidth, newHeight, null);
+        g2d.dispose();
+
+        return resizedImg;
+    }
     private JPanel createOverviewPanel(Events event, Color bgColor, Color textColor) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(bgColor);
@@ -612,7 +754,7 @@ class EventDetailsDialog extends JDialog {
     private String formatDate(String dateStr) {
         try {
             LocalDate date = LocalDate.parse(dateStr);
-            return date.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"));
+            return date.format(DateTimeFormatter.ISO_DATE);
         } catch (Exception e) {
             return dateStr;
         }
@@ -650,42 +792,6 @@ class EventDetailsDialog extends JDialog {
                 button.setBackground(bgColor);
             }
         });
-    }
-}
-
-class Event {
-    String name;
-    String code;
-    String shortDesc;
-    String status;
-    int registered;
-    String bannerPath;
-    String startDate;
-    String endDate;
-    String location;
-    String department;
-    String organizer;
-    String contactPerson;
-    String contactEmail;
-    String time;
-
-    public Event(String name, String code, String shortDesc, String status, int registered, 
-                String bannerPath, String startDate, String endDate, String location, 
-                String department, String contactPerson, String contactEmail, String time) {
-        this.name = name;
-        this.code = code;
-        this.shortDesc = shortDesc;
-        this.status = status;
-        this.registered = registered;
-        this.bannerPath = bannerPath;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.location = location;
-        this.department = department;
-        this.organizer = organizer;
-        this.contactPerson = contactPerson;
-        this.contactEmail = contactEmail;
-        this.time = time;
     }
 }
 

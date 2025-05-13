@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -456,20 +458,86 @@ class AdminEventDetailsWindow extends JDialog {
         mainPanel.setBackground(new Color(241, 245, 249));
 
         // Banner image (placeholder)
+//        JPanel bannerPanel = new JPanel();
+//        bannerPanel.setPreferredSize(new Dimension(650, 200));
+//        bannerPanel.setBackground(new Color(203, 213, 225));
+//        bannerPanel.setBorder(BorderFactory.createCompoundBorder(
+//            BorderFactory.createLineBorder(new Color(30, 58, 138), 1),
+//            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+//        ));
+
+
+        // Banner image (loads from event.getBannerPath())
         JPanel bannerPanel = new JPanel();
         bannerPanel.setPreferredSize(new Dimension(650, 200));
         bannerPanel.setBackground(new Color(203, 213, 225));
         bannerPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(30, 58, 138), 1),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+                BorderFactory.createLineBorder(new Color(30, 58, 138), 1),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
-        
-        JLabel bannerLabel = new JLabel("Event Banner", SwingConstants.CENTER);
-        bannerLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        bannerLabel.setForeground(new Color(75, 85, 99));
-        bannerPanel.add(bannerLabel);
-        
-        mainPanel.add(bannerPanel, BorderLayout.NORTH);
+
+
+        JLabel banner;
+        try {
+            File imageFile = new File(event.getBannerPath());
+            if(imageFile.exists() && imageFile.canRead()) {
+                System.out.println("true");
+                // Load the original image
+                ImageIcon originalIcon = new ImageIcon(imageFile.toURI().toURL());
+                // Scale the image properly to fit the banner size
+                Image scaledImage = getScaledImage(originalIcon.getImage(), 650, 200);
+                banner = new JLabel(new ImageIcon(scaledImage));
+            } else {
+                System.out.println("Image not found or can't be read");
+                banner = new JLabel(new ImageIcon());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Image not found");
+            // Fallback to a default image or show an error message
+            banner = new JLabel(new ImageIcon());
+        }
+        Color primaryColor = new Color(12, 53, 106);
+        banner.setPreferredSize(new Dimension(650, 200));
+        banner.setHorizontalAlignment(SwingConstants.CENTER);
+        banner.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(primaryColor, 1),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        mainPanel.add(banner, BorderLayout.NORTH);
+// Load banner image
+//        JLabel banner;
+//        try {
+//            File imageFile = new File(event.getBannerPath());
+//            if (imageFile.exists() && imageFile.canRead()) {
+//                banner = new JLabel(new ImageIcon(imageFile.toURI().toURL()));
+//                banner.setHorizontalAlignment(SwingConstants.CENTER);
+//            } else {
+//                System.out.println("Image file not found or unreadable");
+//                banner = new JLabel("Event Banner", SwingConstants.CENTER);
+//                banner.setFont(new Font("Arial", Font.BOLD, 18));
+//                banner.setForeground(new Color(75, 85, 99));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Error loading image");
+//            banner = new JLabel("Event Banner", SwingConstants.CENTER);
+//            banner.setFont(new Font("Arial", Font.BOLD, 18));
+//            banner.setForeground(new Color(75, 85, 99));
+//        }
+//
+//        bannerPanel.setLayout(new BorderLayout());
+//        bannerPanel.add(banner, BorderLayout.CENTER);
+//
+//        mainPanel.add(bannerPanel, BorderLayout.NORTH);
+
+
+//        JLabel bannerLabel = new JLabel("Event Banner", SwingConstants.CENTER);
+//        bannerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+//        bannerLabel.setForeground(new Color(75, 85, 99));
+//        bannerPanel.add(bannerLabel);
+//
+//        mainPanel.add(bannerPanel, BorderLayout.NORTH);
 
         // Details panel
         JPanel detailsPanel = new JPanel();
@@ -530,6 +598,32 @@ class AdminEventDetailsWindow extends JDialog {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         add(mainPanel);
         setVisible(true);
+    }
+
+    private Image getScaledImage(Image srcImg, int width, int height) {
+        // Calculate the scaling factors
+        int srcWidth = srcImg.getWidth(null);
+        int srcHeight = srcImg.getHeight(null);
+
+        // Calculate the scaling factors to maintain aspect ratio
+        double scaleW = (double) width / srcWidth;
+        double scaleH = (double) height / srcHeight;
+        double scale = Math.min(scaleW, scaleH); // Take the smaller scale to fit the container
+
+        // Calculate new dimensions
+        int newWidth = (int) (srcWidth * scale);
+        int newHeight = (int) (srcHeight * scale);
+
+        // Create a new scaled image
+        BufferedImage resizedImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resizedImg.createGraphics();
+
+        // Use better quality interpolation
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(srcImg, 0, 0, newWidth, newHeight, null);
+        g2d.dispose();
+
+        return resizedImg;
     }
     
     private void addDetailRow(JPanel panel, String label, String value) {

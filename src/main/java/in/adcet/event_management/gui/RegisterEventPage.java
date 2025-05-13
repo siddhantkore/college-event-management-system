@@ -3,7 +3,6 @@ package in.adcet.event_management.gui;
 import in.adcet.event_management.entity.Events;
 import in.adcet.event_management.entity.User;
 import in.adcet.event_management.notifications.MailNotification;
-import in.adcet.event_management.notifications.Notification;
 import in.adcet.event_management.service.RegisterService;
 import in.adcet.event_management.service.UserService;
 
@@ -11,6 +10,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterEventPage extends JFrame {
     private Color primaryColor = new Color(12, 53, 106);      // Dark blue
@@ -19,6 +22,9 @@ public class RegisterEventPage extends JFrame {
     private Color textColor = new Color(60, 60, 60);          // Dark gray for text
     private UserService userService = new UserService();
     private RegisterService registerService = new RegisterService();
+    private  JPanel paymentPanel;
+    JPanel formPanel;
+    private JComboBox<String> dateComboBox;
 
     public RegisterEventPage(Events event) {
         setTitle("Register for " + event.getName());
@@ -49,7 +55,7 @@ public class RegisterEventPage extends JFrame {
         mainPanel.add(leftBannerPanel, BorderLayout.WEST);
 
         // Right Form Panel
-        JPanel formPanel = new JPanel();
+        formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(secondaryColor);
         formPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
@@ -69,8 +75,40 @@ public class RegisterEventPage extends JFrame {
         JPanel eventPanel = createLabeledFieldPanel("Event Information");
         addLabeledField(eventPanel, "Event Name:", createReadOnlyField(event.getName()));
         addLabeledField(eventPanel, "Event Code:", createReadOnlyField(event.getCode()));
+
+        if (event.getEventDate() != null && event.getEndDate() != null &&
+                !event.getEventDate().isEqual(event.getEndDate())) {
+
+            List<LocalDate> dates = new ArrayList<>();
+            LocalDate currentDate = event.getEventDate();
+            while (!currentDate.isAfter(event.getEndDate())) {
+                dates.add(currentDate);
+                currentDate = currentDate.plusDays(1);
+            }
+
+            String[] dateOptions = dates.stream()
+                    .map(date -> date.format(DateTimeFormatter.ISO_DATE))
+                    .toArray(String[]::new);
+
+            dateComboBox = new JComboBox<>(dateOptions);
+            dateComboBox.setSelectedIndex(0);
+            addLabeledField(eventPanel, "Select Date:", dateComboBox);
+        } else {
+            String singleDate = event.getEventDate().format(DateTimeFormatter.ISO_DATE);
+            addLabeledField(eventPanel, "Date:", createReadOnlyField(singleDate));
+        }
+
         formPanel.add(eventPanel);
         formPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        formPanel.add(eventPanel);
+        formPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        formPanel.add(eventPanel);
+        formPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        if(event.getAmount() > 0) {
+            addPaymentDetails(event);
+        }
 
         // Personal Information
         JPanel personalPanel = createLabeledFieldPanel("Personal Information");
@@ -145,6 +183,52 @@ public class RegisterEventPage extends JFrame {
 
         add(mainPanel);
     }
+
+    private void addPaymentDetails(Events event) {
+        paymentPanel = createLabeledFieldPanel("Payment Details");
+        paymentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Amount Information
+        addLabeledField(paymentPanel, "Amount to Pay:", createReadOnlyField("₹" + event.getAmount()));
+
+        // QR Code Section
+        JPanel qrPanel = new JPanel(new BorderLayout(10, 10));
+        qrPanel.setBackground(secondaryColor);
+
+        JLabel qrInstruction = new JLabel("<html>Scan the QR code below to make payment:<br><small>Payment must be completed to confirm registration</small></html>");
+        qrInstruction.setFont(new Font("Arial", Font.PLAIN, 12));
+
+        // Load QR code image
+        ImageIcon qrIcon = new ImageIcon(getClass().getClassLoader().getResource("images/phonepeqrcode.jpeg"));
+        System.out.println(qrIcon);
+
+        Image scaledQr = qrIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        JLabel qrLabel = new JLabel(new ImageIcon(scaledQr));
+        qrLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
+        JPanel qrContainer = new JPanel();
+        qrContainer.setBackground(secondaryColor);
+
+        // ADD THIS LINE
+        qrContainer.setPreferredSize(new Dimension(160, 160));
+
+        qrContainer.add(qrLabel);
+
+        qrPanel.add(qrInstruction, BorderLayout.NORTH);
+        qrPanel.add(qrContainer, BorderLayout.CENTER);
+
+        paymentPanel.add(qrPanel);
+        paymentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Add to form
+        formPanel.add(paymentPanel);
+        formPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // ADD THESE TWO LINES (force GUI update)
+        formPanel.revalidate();
+        formPanel.repaint();
+    }
+
 
     private JPanel createLabeledFieldPanel(String title) {
         JPanel panel = new JPanel();

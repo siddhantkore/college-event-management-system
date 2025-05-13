@@ -109,22 +109,4 @@ public class EventService {
 			return Optional.empty();
 		}
 	}
-
-
-//	public Optional<Events> updateEvent(Events updatedEvent) {
-//
-//		try{
-//			Optional<Events> events = getEventByCode(updatedEvent.getCode());
-//			if(events.isPresent()){
-//				Events events1 = events.get();
-//				eventDAO.deleteEvent(events1.getCode());
-//				eventDAO.addNewEvent(events1);
-//			}
-//			return events;
-//		} catch (Exception e){
-//			e.printStackTrace();
-//		}
-//
-//		return null;
-//	}
 }

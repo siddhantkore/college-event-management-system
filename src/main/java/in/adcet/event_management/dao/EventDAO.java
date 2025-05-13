@@ -48,17 +48,20 @@ public class EventDAO {
 		try (Session session = sessionFactory.openSession()){
 			
 			transaction = session.beginTransaction();
-			String deleteEventQuery = "DELETE FROM Events e WHERE e.code = :code";
+
+			String deleteEventQuery = "FROM Events e WHERE e.code = :code";
 			
-			int deletedEvent = session.createQuery(deleteEventQuery)
+			Events deletedEvent = session.createQuery(deleteEventQuery, Events.class)
 								.setParameter("code", code)
-								.executeUpdate();
-			
-	    	transaction.commit();
-	    	if(deletedEvent<1) {
-	    		throw new Exception("No Event Found");
-	    	}
-	    	
+										.uniqueResult();
+
+			if(deletedEvent==null)
+				log.warn("No event found");
+
+			deletedEvent.getRegisters().clear();
+			session.delete(deletedEvent);
+
+			transaction.commit();
 	    	return "Deleted successful!!";
 	  
     	} catch (Exception e) {

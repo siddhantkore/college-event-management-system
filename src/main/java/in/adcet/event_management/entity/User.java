@@ -42,7 +42,7 @@ public class User {
 	
 	private String role="student";
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Register> registers;
 	
 	@OneToMany(mappedBy = "winnerUser", cascade = CascadeType.ALL)

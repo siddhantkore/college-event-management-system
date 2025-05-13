@@ -58,6 +58,8 @@ public class Events {
 
 	private String status="UPCOMING";
 
+	private double amount;
+
 	private LocalDate registrationDeadline;
 	
 	private int maxParticipant;
@@ -68,7 +70,7 @@ public class Events {
 
 	private String bannerPath;
 
-	@OneToMany(mappedBy = "events", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "events", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Register> registers;
 	
 	@OneToMany(mappedBy = "events", cascade = CascadeType.ALL)
