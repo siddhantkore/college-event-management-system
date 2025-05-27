@@ -65,5 +65,5 @@ This project aims to digitize and simplify college event workflows that are trad
 
 
 - **Mail Notification Template**
- # ![Notification Template](screenshots/Screenshot 2025-05-28 010758.png)
+  ![Notification Template](./screenshots/Screenshot 2025-05-28 010758.png)
 ---
