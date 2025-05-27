@@ -40,30 +40,30 @@ This project aims to digitize and simplify college event workflows that are trad
 
 > _Below are the UI sections of the system. You can replace each bullet point with actual image links later._
 
-- **Log In & Create Account**
-  ![Log in page](screenshots/Screenshot 2025-05-28 003415.png)
+## 📸 GUI Screenshots
+<div align="center">
 
+### 🔐 Log In & Create Account
+<img src="screenshots/Screenshot%202025-05-28%20003415.png" alt="Log in page" height="300" style="border-radius: 10px;"/>
 
-- **Student Dashboard**
-  ![Student Dashboard](screenshots/Screenshot 2025-05-28 003453.png)
+### 🧑‍🎓 Student Dashboard
+<img src="screenshots/Screenshot%202025-05-28%20003453.png" alt="Student Dashboard" height="300" style="border-radius: 10px;"/>
 
+### 📆 Event Dashboard
+<img src="screenshots/Screenshot%202025-05-28%20003542.png" alt="Event Dashboard" height="300" style="border-radius: 10px;"/>
 
-- **Event Dashboard**
-  ![Event Dashboard](screenshots/Screenshot 2025-05-28 003542.png)
+### 🛠️ Admin Dashboard
+<img src="screenshots/Screenshot%202025-05-28%20003658.png" alt="Admin Dashboard" height="300" style="border-radius: 10px;"/>
 
+### ➕ Event Creation Page
+<img src="screenshots/Screenshot%202025-05-28%20003716.png" alt="Event Creation" height="300" style="border-radius: 10px;"/>
 
-- **Admin Dashboard**
-  ![Admin Dashboard](screenshots/Screenshot 2025-05-28 003658.png)
+### 🗂 Admin Event Management
+<img src="screenshots/Screenshot%202025-05-28%20003831.png" alt="Admin Event Management" height="300" style="border-radius: 10px;"/>
 
+### ✉️ Mail Notification Template
+<img src="screenshots/Screenshot%202025-05-28%20010758.png" alt="Notification Template" height="300" style="border-radius: 10px;"/>
 
-- **Event Creation Page**
-  ![Event Creation](screenshots/Screenshot 2025-05-28 003716.png)
+</div>
 
-
-- **Admin Event Management**
-  ![Admin Event Management](screenshots/Screenshot 2025-05-28 003831.png)
-
-
-- **Mail Notification Template**
-  ![Notification Template](./screenshots/Screenshot 2025-05-28 010758.png)
 ---
