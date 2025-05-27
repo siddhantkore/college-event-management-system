@@ -1,0 +1,20 @@
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg" >
+<session-factory>
+
+	<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/database_name</property>
+    <property name="hibernate.connection.username">your_username</property>
+    <property name="hibernate.connection.password">your_password</property>
+
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.format_sql">true</property>
+    
+    <mapping class="in.adcet.event_management.entity.User"/>
+    <mapping class="in.adcet.event_management.entity.Events"/>
+    <mapping class="in.adcet.event_management.entity.Results"/>
+    <mapping class="in.adcet.event_management.entity.Register"/>
+
+</session-factory>
+</hibernate-configuration>
