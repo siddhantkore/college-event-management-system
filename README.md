@@ -67,3 +67,11 @@ This project aims to digitize and simplify college event workflows that are trad
 </div>
 
 ---
+
+##  Contributors
+
+- [Suhana Pendhari](https://github.com/Suhana-Pendhari)
+- [Siddhant Kore](https://github.com/siddhantkore)
+- Special thanks **Mr. Yogesh Lubal Sir**.
+
+---
