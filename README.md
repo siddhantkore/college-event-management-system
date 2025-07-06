@@ -10,6 +10,12 @@ This project aims to digitize and simplify college event workflows that are trad
 
 ---
 
+## 🎞️ Project Presentation
+
+[📂 Click here to view the Project PPT](https://docs.google.com/presentation/d/18Kdnz94ptpe_WSKOGjU3J79YzIIWxAMD/edit?usp=drive_link&ouid=108616098183881743249&rtpof=true&sd=true)
+
+---
+
 ## 🎯 Objectives
 
 - Allow students to **register and participate** in college events.
@@ -38,7 +44,7 @@ This project aims to digitize and simplify college event workflows that are trad
 
 ## 🖼️ GUI Screenshots
 
-> _Below are the UI sections of the system. You can replace each bullet point with actual image links later._
+> _Below are the UI sections of the system._
 
 ## 📸 GUI Screenshots
 <div align="center">
